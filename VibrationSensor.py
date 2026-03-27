@@ -29,7 +29,7 @@ class Accelerometer(Sensor):
         self._set_range_8g()
         self._active()
 
-    print(f"[ACCELEROMETER] Initialized on bus {bus}, address 0x{self.i2c_address:02X}")
+        print(f"[ACCELEROMETER] Initialized on bus {bus}, address 0x{self.i2c_address:02X}")
 
 
   
