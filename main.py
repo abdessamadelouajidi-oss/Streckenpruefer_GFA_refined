@@ -105,9 +105,9 @@ class MeasurementSystem:
             self.readings.append(
                 {
                 'timestamp': timestamp,
-                'ax': accel_data['x'],
-                'ay': accel_data['y'],
-                'az': accel_data['z'],
+                'ax': accel_data['ax'],
+                'ay': accel_data['ay'],
+                'az': accel_data['az'],
                 'spin_count': spin_count
                 }
             )
