@@ -34,12 +34,12 @@ class BeginButton(Button):
 
     def __init__(self, pin=17, name="BEGIN_BUTTON"):
         super().__init__(pin, name, pull_up=True)
-        self.last_press_time = 0.0
+        self.last_press_time = 0
         self.debounce_time = 0.3
         self._armed = True
 
     def check_press(self):
-        pressed = self.is_pressed()
+       
 
         # Re-arm only after button release
         if not pressed:
