@@ -113,9 +113,9 @@ class MeasurementSystem:
             )
             print(
                 f"[{timestamp}] Vibration - "
-                f"X={accel_data['ax']} m/s², "
-                f"Y={accel_data['ay']} m/s², "
-                f"Z={accel_data['az']} m/s²"
+                f"ax={accel_data['ax']} m/s², "
+                f"ay={accel_data['ay']} m/s², "
+                f"az={accel_data['az']} m/s²"
             )
             if self.hall_sensor:
                 print(f"[{timestamp}] spins = {spin_count}") 
