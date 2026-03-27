@@ -26,7 +26,7 @@ class HallSensor(ABC):
 
         pull = GPIO.PUD_UP if self.pull_up else GPIO.PUD_DOWN
 
-        self._thread = threading.Thread(target=self._poll_sensor, daemon=True)
+        self._thread = threading.Thread(target=self._run, daemon=True)
         self._thread.start()
 
     
