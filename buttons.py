@@ -1,6 +1,7 @@
 "Button des PCB Steuerungsplatine" 
 
-import time 
+import time
+import threading
 import RPi.GPIO as GPIO
 "father class for all buttons, handles GPIO"
 class Button: 
