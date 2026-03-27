@@ -70,7 +70,7 @@ class MeasurementSystem:
             if self.hall_sensor:
                 self.hall_sensor.reset_count()
             
-            slef.idle_led.turn_off()
+            self.idle_led.turn_off()
         else:
             self.measuring_led.turn_off()
             self.idle_led.turn_on()
