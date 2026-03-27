@@ -64,27 +64,34 @@ class MeasurementSystem:
 
     def on_begin_button_pressed(self):
         self.state_machine.toggle_measurement()
+
         if self.state_machine.is_measuring():
+            # NEU: nur neue Werte ab Start
             self.readings.clear()
             self.last_reading_time = 0
             if self.hall_sensor:
                 self.hall_sensor.reset_count()
-            
+
             self.idle_led.turn_off()
         else:
             self.measuring_led.turn_off()
             self.idle_led.turn_on()
-            self.save_readings_to_csv()
+            # optional: hier NICHT leeren, sonst verlierst du Messdaten beim Stop per BEGIN
+            # self.readings.clear()
 
     def on_shutdown(self):
-
         if self.state_machine.is_measuring():
             self.state_machine.stop_measurement()
 
         self.measuring_led.turn_off()
-        self.idle_led.turn_off()
+        self.idle_led.turn_on()
         self.save_readings_to_csv()
 
+    # IMPORTANT: do NOT clear readings here,
+    # otherwise USB copy later will say "No readings to copy yet."
+    # self.readings.clear()
+
+        print("\n[POWER] Measurement stopped. Returned to IDLE.")
 
     
     def read_vibration(self):
