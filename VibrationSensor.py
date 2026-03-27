@@ -62,7 +62,7 @@ class Accelerometer(Sensor):
     def read(self):
 
         if self.i2c is None:
-            return {'x': 999, 'y': 999, 'z': 999}
+            return {'ax': 999, 'ay': 999, 'az': 999}
         
         #6 Bytes lesen: X_MSB, X_LSB, Y_MSB, Y_LSB, Z_MSB, Z_LSB
         try: 
@@ -77,8 +77,8 @@ class Accelerometer(Sensor):
             ay = (y_raw/ 1024.0) * 9.81
             az = (z_raw/ 1024.0) * 9.81  
 
-            return {'x': round(x, 2), 'y': round(y, 2), 'z': round(z, 2)}
+            return {'ax': round(x, 2), 'ay': round(y, 2), 'az': round(z, 2)}
         
         except OSError as e:
             print(f"[ACCELEROMETER] Read OSError (errno={getattr(e, 'errno', 'N/A')}): {e}")
-            return {'x': 999, 'y': 999, 'z': 999}
+            return {'ax': 999, 'ay': 999, 'az': 999}
