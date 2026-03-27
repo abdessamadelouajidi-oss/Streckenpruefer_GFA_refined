@@ -77,7 +77,7 @@ class Accelerometer(Sensor):
             ay = (y_raw/ 1024.0) * 9.81
             az = (z_raw/ 1024.0) * 9.81  
 
-            return {'ax': round(x, 2), 'ay': round(y, 2), 'az': round(z, 2)}
+            return {'ax': round(ax, 2), 'ay': round(ay, 2), 'az': round(az, 2)}
         
         except OSError as e:
             print(f"[ACCELEROMETER] Read OSError (errno={getattr(e, 'errno', 'N/A')}): {e}")
