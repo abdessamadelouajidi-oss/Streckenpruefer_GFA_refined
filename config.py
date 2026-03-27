@@ -2,7 +2,7 @@
 BEGIN_BUTTON_PIN = 17 #GPIO Pin für den Startknopf
 POWER_BUTTON_PIN = 27 #GPIO Pin für den Powerknopf
 
-ACCELEROMETER_I2C_ADDRESS = 0x1C #I2C Adresse des Beschleunigungssensors
+ACCELEROMETER_I2C_ADDRESS = 0x1D #I2C Adresse des Beschleunigungssensors
 
 HALL_ENABLED = True #Ob der Hall Sensor (Drehzahlsensor) verwendet wird
 HALL_SENSOR_PIN = 22 #GPIO Pin für den Hall Sensor
