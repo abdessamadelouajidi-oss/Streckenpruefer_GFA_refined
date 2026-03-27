@@ -16,6 +16,7 @@ class Button:
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
         pull = GPIO.PUD_UP if pull_up else GPIO.PUD_DOWN 
+        GPIO.setup(self.pin, GPIO.IN, pull_up_down=pull)
 
 
     def set_callback(self, callback):
@@ -53,7 +54,7 @@ class BeginButton(Button):
             self.last_press_time = current_time
             print(f"[{self.name}] Pressed - toggling measurement")
             if self.callback:
-                self.set_callback()
+                self.callback()
             return True
 
         return False 

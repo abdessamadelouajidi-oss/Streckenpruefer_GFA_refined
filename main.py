@@ -43,7 +43,7 @@ class MeasurementSystem:
 
         self.power_button = PowerButton(pin=POWER_BUTTON_PIN)
         #callback für Power Button, um das Programm sicher zu beenden
-        self.power_button.set_callback(self.on_shutdown)
+        self.power_button.set_shutdown_callback(self.on_shutdown)
 
         #initilisiere die LEDs
         self.idle_led = IdleLED(pin=IDLE_LED_PIN)
