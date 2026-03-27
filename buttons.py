@@ -68,7 +68,7 @@ class PowerButton(Button):
         if self.is_pressed():
             if self.press_start_time is None:
                 self.press_start_time = time.time()
-                 print(f"[{self.name}] Pressed (hold for {self.hold_threshold}s to shutdown)")
+                print(f"[{self.name}] Pressed (hold for {self.hold_threshold}s to shutdown)")
             
             hold_time = time.time() - self.press_start_time
             if hold_time >= self.hold_threshold:
