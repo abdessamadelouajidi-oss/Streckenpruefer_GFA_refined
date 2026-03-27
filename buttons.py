@@ -36,20 +36,20 @@ class BeginButton(Button):
         super().__init__(pin, name, pull_up=True)
         self.last_press_time = 0
         self.debounce_time = 0.3
-        self._armed = True
+        
 
     def check_press(self):
        
 
         # Re-arm only after button release
-        if not pressed:
+        if not self.is_pressed():
             self._armed = True
             return False
 
         current_time = time.time()
         if self._armed and (current_time - self.last_press_time > self.debounce_time):
             self.last_press_time = current_time
-            self._armed = False
+            print(f"[{self.name}] Pressed - toggling measurement")
             if self.callback:
                 self.callback()
             return True
@@ -62,27 +62,29 @@ class PowerButton(Button):
         self.hold_threshold = 2.0
         self.press_start_time = None
         self.shutdown_callback = None
-        self._triggered = False
+        
     
     def check_hold(self): 
         if self.is_pressed():
             if self.press_start_time is None:
                 self.press_start_time = time.time()
-                self._triggered = False
+                 print(f"[{self.name}] Pressed (hold for {self.hold_threshold}s to shutdown)")
             
             hold_time = time.time() - self.press_start_time
-            if hold_time >= self.hold_threshold and not self._triggered:
-                self._triggered = True
+            if hold_time >= self.hold_threshold:
+                print(f"[{self.name}] Held for {round(hold_time, 2)}s - Stopping measurement...")
+               
                 if self.shutdown_callback:
                     self.shutdown_callback()
+                self.press_start_time = None
                 return True
-            else:
-                return False
+        
         else:
             if self.press_start_time is not None:
                 hold_time = time.time() - self.press_start_time
                 if hold_time <= self.hold_threshold:
+                    print(f"[{self.name}] Released after {round(hold_time, 2)}s (not long enough)")
                     self.press_start_time = None
-                    self._triggered = False
+                    
                     
         return False
