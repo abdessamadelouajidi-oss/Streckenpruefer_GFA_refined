@@ -16,7 +16,7 @@ class Accelerometer(Sensor):
     OUT_X_MSB = 0x01
     XYZ_DATA_CFG = 0x0E
 
-    def __init__(self, i2c_address=0x1D, bus=1, auto_detect=True):
+    def __init__(self, i2c_address=0x1D, bus=1, auto_detect=False):
         
         self.bus= bus 
         self.i2c_address = i2c_address
