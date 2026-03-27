@@ -73,9 +73,9 @@ class Accelerometer(Sensor):
             z_raw = self._convert_14bit(data[4], data[5]) 
 
 
-            x = (x_raw/ 1024.0) * 9.81
-            y = (y_raw/ 1024.0) * 9.81
-            z = (z_raw/ 1024.0) * 9.81  
+            ax = (x_raw/ 1024.0) * 9.81
+            ay = (y_raw/ 1024.0) * 9.81
+            az = (z_raw/ 1024.0) * 9.81  
 
             return {'x': round(x, 2), 'y': round(y, 2), 'z': round(z, 2)}
         
