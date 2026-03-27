@@ -9,7 +9,9 @@ class Button:
         self.pin = pin
         self.name = name
         self.pull_up = pull_up
+        self.GPIO = None
         self.callback = None
+
         self.GPIO=GPIO
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
@@ -43,11 +45,11 @@ class BeginButton(Button):
 
         # Re-arm only after button release
         if not self.is_pressed():
-            self._armed = True
+            
             return False
 
         current_time = time.time()
-        if self._armed and (current_time - self.last_press_time > self.debounce_time):
+        if  (current_time - self.last_press_time > self.debounce_time):
             self.last_press_time = current_time
             print(f"[{self.name}] Pressed - toggling measurement")
             if self.callback:
@@ -59,10 +61,12 @@ class BeginButton(Button):
 class PowerButton(Button):
     def __init__(self, pin=27, name="POWER_BUTTON"):
         super().__init__(pin, name, pull_up=True)
-        self.hold_threshold = 2.0
+        self.hold_threshold = 1.0
         self.press_start_time = None
         self.shutdown_callback = None
-        
+
+    def set_shutdown_callback(self, callback):
+        self.shutdown_callback = callback
     
     def check_hold(self): 
         if self.is_pressed():
@@ -71,7 +75,7 @@ class PowerButton(Button):
                 print(f"[{self.name}] Pressed (hold for {self.hold_threshold}s to shutdown)")
             
             hold_time = time.time() - self.press_start_time
-            if hold_time >= self.hold_threshold:
+            if hold_time > self.hold_threshold:
                 print(f"[{self.name}] Held for {round(hold_time, 2)}s - Stopping measurement...")
                
                 if self.shutdown_callback:
