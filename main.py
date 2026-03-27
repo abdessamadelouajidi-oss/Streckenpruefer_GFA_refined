@@ -105,17 +105,17 @@ class MeasurementSystem:
             self.readings.append(
                 {
                 'timestamp': timestamp,
-                'x': accel_data['x'],
-                'y': accel_data['y'],
-                'z': accel_data['z'],
+                'ax': accel_data['x'],
+                'ay': accel_data['y'],
+                'az': accel_data['z'],
                 'spin_count': spin_count
                 }
             )
             print(
                 f"[{timestamp}] Vibration - "
-                f"X={accel_data['x']} m/s², "
-                f"Y={accel_data['y']} m/s², "
-                f"Z={accel_data['z']} m/s²"
+                f"X={accel_data['ax']} m/s², "
+                f"Y={accel_data['ay']} m/s², "
+                f"Z={accel_data['az']} m/s²"
             )
             if self.hall_sensor:
                 print(f"[{timestamp}] spins = {spin_count}") 
@@ -235,7 +235,7 @@ class MeasurementSystem:
             return
         try: 
             with open(self.csv_output_path, "w", newline= "") as csv_file:
-                writer = csv.DictWriter(csv_file, fieldnames = ["timestamp", "ax" , "ay" , "az" , "Umlaufzahl"],)
+                writer = csv.DictWriter(csv_file, fieldnames = ["timestamp", "ax" , "ay" , "az" , "spin_count"],)
                 writer.writeheader()
                 writer.writerows(self.readings)
             print (f"[CSV] Saved {len(self.readings)} readings to {self.csv_output_path}")
