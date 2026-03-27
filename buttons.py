@@ -53,7 +53,7 @@ class BeginButton(Button):
             self.last_press_time = current_time
             print(f"[{self.name}] Pressed - toggling measurement")
             if self.callback:
-                self.callback()
+                self.set_callback()
             return True
 
         return False 
