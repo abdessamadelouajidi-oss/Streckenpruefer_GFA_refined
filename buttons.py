@@ -27,6 +27,7 @@ class Button:
 
             self.GPIO = GPIO
             GPIO.setmode(GPIO.BCM)
+            # Pull-up bedeutet: ungedrueckt = HIGH, gedrueckt = LOW.
             pull = GPIO.PUD_UP if pull_up else GPIO.PUD_DOWN
             GPIO.setup(pin, GPIO.IN, pull_up_down=pull)
             print(f"[{name}] Button initialized on GPIO {pin}")
@@ -45,7 +46,7 @@ class Button:
             return False
 
         try:
-            # Button is pressed when GPIO reads LOW (pull-up) or HIGH (pull-down)
+            # Je nach Verdrahtung ist ein Tastendruck elektrisch LOW oder HIGH.
             state = self.GPIO.input(self.pin)
             return state == 0 if self.pull_up else state == 1
         except Exception:
@@ -63,6 +64,7 @@ class BeginButton(Button):
         """Initialize the BEGIN button on GPIO 17 by default."""
         super().__init__(pin, name, pull_up=True)
         self.last_press_time = 0
+        # Zeitbasierte Entprellung, damit ein Tastendruck nur einmal zaehlt.
         self.debounce_time = 0.3  # 300ms debounce
 
     def check_press(self):
@@ -72,6 +74,7 @@ class BeginButton(Button):
 
         current_time = time.time()
         if current_time - self.last_press_time > self.debounce_time:
+            # Erst nach Ablauf der Entprellzeit wird der Callback ausgeloest.
             self.last_press_time = current_time
             print(f"[{self.name}] Pressed - toggling measurement")
             if self.callback:
@@ -91,6 +94,7 @@ class PowerButton(Button):
     def __init__(self, pin=27, name="POWER_BUTTON"):
         """Initialize the POWER button on GPIO 27 by default."""
         super().__init__(pin, name, pull_up=True)
+        # Der Shutdown wird nur nach bewusstem Gedrueckthalten ausgeloest.
         self.hold_threshold = 2.0  # 2 seconds
         self.press_start_time = None
         self.shutdown_callback = None
@@ -103,6 +107,7 @@ class PowerButton(Button):
         """Check if button is being held long enough for shutdown."""
         if self.is_pressed():
             if self.press_start_time is None:
+                # Startzeit nur beim ersten Erkennen des Tastendrucks setzen.
                 self.press_start_time = time.time()
                 print(f"[{self.name}] Pressed (hold for {self.hold_threshold}s to shutdown)")
 

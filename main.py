@@ -65,10 +65,11 @@ class MeasurementSystem:
     def on_begin_button_pressed(self):
         self.state_machine.toggle_measurement()
         if self.state_machine.is_measuring():
-            # NEU: nur neue Werte ab Start
+            # Beim Start einer neuen Messung werden alte Messwerte bewusst verworfen.
             self.readings.clear()
             self.last_reading_time = 0
             if self.hall_sensor:
+                # Hall-Zaehler ebenfalls auf 0 setzen, damit nur Impulse der neuen Messung erfasst werden.
                 self.hall_sensor.reset_count()
 
             self.idle_led.turn_off()
@@ -87,9 +88,7 @@ class MeasurementSystem:
         self.idle_led.turn_on()
         self.save_readings_to_csv()
 
-    # IMPORTANT: do NOT clear readings here,
-    # otherwise USB copy later will say "No readings to copy yet."
-    # self.readings.clear()
+    
 
         print("\n[POWER] Measurement stopped. Returned to IDLE.")
 
@@ -137,6 +136,7 @@ class MeasurementSystem:
             return []
         mounts = set()
         try:
+            # USB-Ziele werden ueber die aktuell im Linux-System gemounteten Dateisysteme erkannt.
             with open("/proc/mounts", "r") as mounts_file:
                 for line in mounts_file:
                     parts = line.split()
@@ -156,6 +156,11 @@ class MeasurementSystem:
         base = os.path.splitext(os.path.basename(self.csv_output_path))[0]
         timestamp = time.strftime("%Y%m%d_%H%M%S", time.localtime())
         return os.path.join(mount_path, f"{base}_{timestamp}.csv")        
+    
+
+
+
+
 
     def _copy_csv_to_mounts(self, mount_paths):
         
@@ -164,6 +169,7 @@ class MeasurementSystem:
             return
         
         self.usb_copy_led.set_copying()
+        # Vor dem Kopieren wird immer erst die aktuelle CSV-Datei neu geschrieben.
         self.save_readings_to_csv()  # Speichern der aktuellen Messdaten vor dem Kopieren
 
         success = False  #Flag, um den Erfolg des Kopiervorgangs zu verfolgen
@@ -182,8 +188,14 @@ class MeasurementSystem:
         else:
             self.usb_copy_led.set_idle()
 
+
+
+
+
+
     def _check_usb_copy(self):
         mounts = set(self._scan_usb_mounts())
+        # Kopiert wird nur auf neu erkannte Mounts, damit vorhandene USB-Laufwerke nicht dauernd erneut beschrieben werden.
         new_mounts = mounts - self.usb_seen_mounts
 
         if new_mounts:
@@ -199,9 +211,12 @@ class MeasurementSystem:
 
 
 
+
+
     def run(self):
         try: 
             while self.running: 
+                # Taster werden in jeder Schleifenrunde aktiv abgefragt.
                 self.begin_button.check_press()
                 self.power_button.check_hold()
 
@@ -216,11 +231,13 @@ class MeasurementSystem:
                     self.state_machine.is_measuring() and 
                     current_time - self.last_reading_time >= READING_INTERVAL
                 ):
+                    # Sensorwerte werden nur im Messzustand und nur im konfigurierten Intervall erfasst.
                     self.read_vibration()
                     self.last_reading_time = current_time
                 
                 if current_time - self.last_usb_check_time >= USB_CHECK_INTERVAL:
                     self.last_usb_check_time = current_time
+                    # USB-Erkennung laeuft getrennt vom Messintervall, damit beides unabhaengig konfiguriert werden kann.
                     self._check_usb_copy()
 
         except KeyboardInterrupt:
@@ -228,6 +245,11 @@ class MeasurementSystem:
             self.on_shutdown()
         finally:
             self.cleanup()
+
+
+
+
+
 
     def save_readings_to_csv(self):
         if not self.readings: 
@@ -246,11 +268,13 @@ class MeasurementSystem:
     def cleanup(self):
         print("cleaning up ...")
         if self.hall_sensor:
+            # Der HallSensor besitzt einen eigenen Thread und muss daher vor GPIO.cleanup() sauber beendet werden.
             self.hall_sensor.cleanup()
         GPIO.cleanup()
         print("GPIO ist clean!")
 
         self.save_readings_to_csv()
+        
 
 
 
