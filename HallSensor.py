@@ -41,30 +41,30 @@ class HallSensor(ABC):
         last = self.GPIO.input(self.pin)
 
         while not self._stop.is_set():
-              cur = self.GPIO.input(self.pin)
+            cur = self.GPIO.input(self.pin)
 
-              if armed: 
-                     if cur == 1 and last == 0:
-                        high_streak += 1
-                        if high_streak >= self.stable_samples:
-                            # Zaehlerzugriff absichern, damit Lesen und Schreiben zwischen Threads konsistent bleiben.
-                            with self._lock:
-                                self._count += 1
-                            armed = False 
-                            high_streak = 0 
-                    else:
+            if armed: 
+                if cur == 1 and last == 0:
+                    high_streak += 1
+                    if high_streak >= self.stable_samples:
+                        # Zaehlerzugriff absichern, damit Lesen und Schreiben zwischen Threads konsistent bleiben.
+                        with self._lock:
+                            self._count += 1
+                        armed = False 
+                        high_streak = 0 
+                else:
+                    high_streak = 0
+            else:
+                if cur == 1:
+                    high_streak += 1
+                    if high_streak >= self.stable_samples:
+                        armed = True 
                         high_streak = 0
-              else:
-                  if cur == 1:
-                        high_streak += 1
-                        if high_streak >= self.stable_samples:
-                            armed = True 
-                            high_streak = 0
-                  else:
-                        high_streak = 0
-              
-              last = cur
-              time.sleep(period)
+                else:
+                    high_streak = 0
+
+            last = cur
+            time.sleep(period)
     
     def get_count(self):
          with self._lock:
